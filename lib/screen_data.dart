@@ -5,7 +5,7 @@ class ScreenData with ChangeNotifier {
     required int generation,
   }) : _generation = generation;
 
-  int _generation = 1;
+  int _generation = 5;
 
   int getGeneration() {
     return _generation;

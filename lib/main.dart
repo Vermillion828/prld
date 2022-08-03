@@ -1,21 +1,26 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:honda_prelude/screen_data.dart';
 import 'package:honda_prelude/screens/mopowababeh/mo_powa_babeh.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => ScreenData(
-        generation: 5,
-      ),
-      child: const App(),
-    ),
+    const App(),
   );
 }
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
+
+  Future<int> _getSavedCurrentGeneration() async {
+    final prefs = await SharedPreferences.getInstance();
+    await Future.delayed(const Duration(seconds: 1));
+    return prefs.getInt('GENERATION') ?? 5;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +40,46 @@ class App extends StatelessWidget {
         useMaterial3: true,
         primarySwatch: Colors.blue,
       ),
-      home: const HomePage(title: 'Honda Prelude I-V'),
+      home: FutureBuilder(
+        future: _getSavedCurrentGeneration(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ChangeNotifierProvider(
+              create: (context) => ScreenData(generation: snapshot.data as int),
+              child: const HomePage(),
+            );
+          } else {
+            return Material(
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 20.0),
+                  const Text(
+                    'PRLD',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 60.0,
+                    ),
+                  ),
+                  Platform.isIOS
+                      ? const CupertinoActivityIndicator()
+                      : const CircularProgressIndicator(),
+                ],
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const HomePage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -68,55 +104,75 @@ class _HomePageState extends State<HomePage> {
                 snap: false,
                 floating: false,
                 expandedHeight: orientation == Orientation.portrait
-                    ? MediaQuery.of(context).size.width
-                    : MediaQuery.of(context).size.height,
+                    ? (MediaQuery.of(context).size.width -
+                        MediaQuery.of(context).padding.top)
+                    : (MediaQuery.of(context).size.height -
+                        MediaQuery.of(context).padding.bottom),
                 flexibleSpace: FlexibleSpaceBar(
                   titlePadding: EdgeInsets.zero,
                   centerTitle: true,
-                  title: Container(
-                    alignment: Alignment.center,
-                    width: double.infinity,
-                    height: 50,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: _getGradientColors(),
-                        stops: _getGradientStops(),
+                  title: GestureDetector(
+                    onPanUpdate: (details) {
+                      if (details.delta.dx > 0 &&
+                          (pageController.page ?? 0.0) > 0.0) {
+                        pageController.previousPage(
+                          duration: const Duration(milliseconds: 400),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                      if (details.delta.dx < 0 &&
+                          (pageController.page ?? 4.0) < 4.0) {
+                        pageController.nextPage(
+                          duration: const Duration(milliseconds: 400),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: _getGradientColors(),
+                          stops: _getGradientStops(),
+                        ),
                       ),
-                    ),
-                    child: Consumer<ScreenData>(
-                      builder: (context, screenData, child) => Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              ..._getLeftDots(screenData.getGeneration()),
-                              Text(
-                                'Prelude ${screenData.getGeneration()} gen',
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14.0,
+                      child: Consumer<ScreenData>(
+                        builder: (context, screenData, child) => Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                ..._getLeftDots(screenData.getGeneration()),
+                                Text(
+                                  'Prelude ${screenData.getGeneration()} gen',
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0,
+                                  ),
                                 ),
-                              ),
-                              ..._getRightDots(screenData.getGeneration()),
-                            ],
-                          ),
-                          Text(
-                            '(${_getYears(screenData.getGeneration())})',
-                            style: const TextStyle(
-                              color: Colors.white70,
-                              fontWeight: FontWeight.w300,
-                              fontSize: 10.0,
+                                ..._getRightDots(screenData.getGeneration()),
+                              ],
                             ),
-                          ),
-                          const SizedBox(
-                            height: 6.0,
-                          ),
-                        ],
+                            Text(
+                              '(${_getYears(screenData.getGeneration())})',
+                              style: const TextStyle(
+                                color: Colors.white70,
+                                fontWeight: FontWeight.w300,
+                                fontSize: 10.0,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 6.0,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -124,6 +180,7 @@ class _HomePageState extends State<HomePage> {
                     controller: pageController,
                     onPageChanged: (value) {
                       context.read<ScreenData>().setGeneration(value + 1);
+                      _saveCurrentGeneration(value + 1);
                     },
                     children: _getPages(),
                   ),
@@ -195,6 +252,11 @@ class _HomePageState extends State<HomePage> {
         );
       },
     );
+  }
+
+  Future<void> _saveCurrentGeneration(int currentGeneration) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('GENERATION', currentGeneration);
   }
 
   List<Widget> _getLeftDots(int curentGen) {
