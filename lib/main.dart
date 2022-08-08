@@ -55,12 +55,28 @@ class App extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 20.0),
-                  const Text(
-                    'PRLD',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 60.0,
+                  Center(
+                    child: ShaderMask(
+                      shaderCallback: (Rect bounds) {
+                        return LinearGradient(
+                          colors: [
+                            Colors.black,
+                            Colors.red.shade900,
+                            Colors.grey.shade400,
+                            Colors.teal.shade900,
+                            Colors.blue.shade900,
+                          ],
+                        ).createShader(bounds);
+                      },
+                      child: const Text(
+                        'PRELUDES',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w900,
+                          fontSize: 60.0,
+                          letterSpacing: -7.0,
+                        ),
+                      ),
                     ),
                   ),
                   Platform.isIOS

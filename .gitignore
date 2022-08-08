@@ -143,3 +143,8 @@ macos/Podfile
 macos/Flutter/Flutter-Debug.xcconfig
 macos/Flutter/Flutter-Release.xcconfig
 macos/Flutter/GeneratedPluginRegistrant.swift
+.dart_tool/flutter_build/89e13566f2dc0946c0cdb39f4cab0dce/.filecache
+.dart_tool/flutter_build/89e13566f2dc0946c0cdb39f4cab0dce/app.dill
+.dart_tool/flutter_build/89e13566f2dc0946c0cdb39f4cab0dce/debug_ios_bundle_flutter_assets.stamp
+.dart_tool/flutter_build/89e13566f2dc0946c0cdb39f4cab0dce/flutter_assets.d
+.gitignore
