@@ -16,12 +16,12 @@
         "source": "/Users/v.zamkovyi/DEV/REP/prld/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png"
     },
     {
-        "merged": "/Users/v.zamkovyi/DEV/REP/prld/build/app/intermediates/merged_res/debug/mipmap-xhdpi_ic_launcher.png.flat",
-        "source": "/Users/v.zamkovyi/DEV/REP/prld/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png"
-    },
-    {
         "merged": "/Users/v.zamkovyi/DEV/REP/prld/build/app/intermediates/merged_res/debug/mipmap-mdpi_ic_launcher.png.flat",
         "source": "/Users/v.zamkovyi/DEV/REP/prld/android/app/src/main/res/mipmap-mdpi/ic_launcher.png"
+    },
+    {
+        "merged": "/Users/v.zamkovyi/DEV/REP/prld/build/app/intermediates/merged_res/debug/mipmap-xhdpi_ic_launcher.png.flat",
+        "source": "/Users/v.zamkovyi/DEV/REP/prld/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png"
     },
     {
         "merged": "/Users/v.zamkovyi/DEV/REP/prld/build/app/intermediates/merged_res/debug/mipmap-hdpi_ic_launcher.png.flat",

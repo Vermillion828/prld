@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:honda_prelude/screen_data.dart';
+import 'package:honda_prelude/screens/brochures/brochures.dart';
 import 'package:honda_prelude/screens/mopowababeh/mo_powa_babeh.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,6 +34,13 @@ class App extends StatelessWidget {
             builder: (context) => const MoPowaBabeh(),
           );
         }
+
+        if (settings.name == Brochures.routeName) {
+          return MaterialPageRoute(
+            builder: (context) => const Brochures(),
+          );
+        }
+
         assert(false, 'Need to implement ${settings.name}');
         return null;
       },
@@ -102,10 +110,55 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late PageController pageController;
+
+  void _welcomeAnimation() {
+    const offset = 50.0;
+    final currentPage = (pageController.page ?? 0.0).toInt();
+    var steps = [];
+    if (currentPage == 0) {
+      steps = [
+        pageController.offset + offset,
+      ];
+    } else if (currentPage == 4) {
+      steps = [
+        pageController.offset - offset,
+      ];
+    } else {
+      steps = [
+        pageController.offset + offset,
+        pageController.offset - offset,
+      ];
+    }
+    final shakePagesStream = Stream<int>.periodic(
+      const Duration(
+        milliseconds: 750,
+      ),
+      (gen) => gen,
+    ).take(steps.length);
+    shakePagesStream.forEach((element) {
+      pageController.animateTo(
+        steps[element],
+        duration: const Duration(
+          milliseconds: 200,
+        ),
+        curve: Curves.fastOutSlowIn,
+      );
+    });
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _welcomeAnimation();
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final isSmallScreen = MediaQuery.of(context).size.height < 620;
-    PageController pageController = PageController(
+    pageController = PageController(
         initialPage: context.watch<ScreenData>().getGeneration() - 1);
 
     return OrientationBuilder(
@@ -207,67 +260,132 @@ class _HomePageState extends State<HomePage> {
                   crossAxisCount: 3,
                 ),
                 delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  return Material(
-                    color: index % 2 == 0 ? Colors.white : Colors.grey[100],
-                    child: Center(
-                      child: isSmallScreen
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                FloatingActionButton(
-                                  heroTag: 'more_power_btn_$index',
-                                  onPressed: () {
-                                    Navigator.of(context).pushNamed(
-                                      MoPowaBabeh.routeName,
-                                      // arguments: screenData,
-                                    );
-                                  },
-                                  tooltip: 'More power!',
-                                  child: const Icon(Icons.car_repair),
-                                ),
-                                const SizedBox(height: 8.0),
-                                const Text(
-                                  'MORE POWER!',
-                                  style: TextStyle(fontSize: 11.0),
-                                ),
-                              ],
-                            )
-                          : FloatingActionButton.large(
-                              heroTag: 'more_power_btn_$index',
-                              onPressed: () {
-                                Navigator.of(context).pushNamed(
-                                  MoPowaBabeh.routeName,
-                                  // arguments: screenData,
-                                );
-                              },
-                              tooltip: 'More power!',
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: const [
-                                  Icon(Icons.car_repair),
-                                  SizedBox(height: 4.0),
-                                  Text(
-                                    'MORE',
-                                    style: TextStyle(fontSize: 11.0),
-                                  ),
-                                  Text(
-                                    'POWER!',
-                                    style: TextStyle(fontSize: 11.0),
-                                  ),
-                                ],
-                              ),
-                            ),
-                    ),
-                  );
-                }),
+                  (BuildContext context, int index) {
+                    return Material(
+                      color: index % 2 == 0 ? Colors.white : Colors.grey[100],
+                      child: Center(
+                        child: isSmallScreen
+                            ? getSmallFABbyInddex(index)
+                            : getBigFABbyInddex(index),
+                      ),
+                    );
+                  },
+                  childCount: 15,
+                ),
               ),
             ],
           ),
         );
       },
     );
+  }
+
+  Widget getSmallFABbyInddex(int index) {
+    if (index == 0) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FloatingActionButton(
+            heroTag: 'more_power_btn_$index',
+            onPressed: () {
+              Navigator.of(context).pushNamed(
+                MoPowaBabeh.routeName,
+                // arguments: screenData,
+              );
+            },
+            tooltip: 'More power!',
+            child: const Icon(Icons.car_repair),
+          ),
+          const SizedBox(height: 8.0),
+          const Text(
+            'MORE POWER!',
+            style: TextStyle(fontSize: 11.0),
+          ),
+        ],
+      );
+    } else if (index == 1) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FloatingActionButton(
+            heroTag: 'brochure_btn',
+            onPressed: () {
+              Navigator.of(context).pushNamed(
+                Brochures.routeName,
+              );
+            },
+            tooltip: 'Brochures',
+            child: const Icon(Icons.picture_as_pdf_rounded),
+          ),
+          const SizedBox(height: 8.0),
+          const Text(
+            'BROCHURES',
+            style: TextStyle(fontSize: 11.0),
+          ),
+        ],
+      );
+    } else {
+      return const SizedBox();
+    }
+  }
+
+  Widget getBigFABbyInddex(int index) {
+    if (index == 0) {
+      return FloatingActionButton.large(
+        heroTag: 'more_power_btn_$index',
+        onPressed: () {
+          Navigator.of(context).pushNamed(
+            MoPowaBabeh.routeName,
+            // arguments: screenData,
+          );
+        },
+        tooltip: 'More power!',
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: const [
+            Icon(Icons.car_repair),
+            SizedBox(height: 4.0),
+            Text(
+              'MORE',
+              style: TextStyle(fontSize: 11.0),
+            ),
+            Text(
+              'POWER!',
+              style: TextStyle(fontSize: 11.0),
+            ),
+          ],
+        ),
+      );
+    } else if (index == 1) {
+      return FloatingActionButton.large(
+        heroTag: 'brochure_btn',
+        onPressed: () {
+          Navigator.of(context).pushNamed(
+            Brochures.routeName,
+          );
+        },
+        tooltip: 'Brochures',
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: const [
+            Icon(Icons.picture_as_pdf_rounded),
+            SizedBox(height: 4.0),
+            Text(
+              'BROCHURES',
+              style: TextStyle(fontSize: 11.0),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return const SizedBox();
+    }
+  }
+
+  Stream<Widget> getSmallFABsListForGen() async* {
+    //TODO
   }
 
   Future<void> _saveCurrentGeneration(int currentGeneration) async {
