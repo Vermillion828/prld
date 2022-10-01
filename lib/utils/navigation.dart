@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:honda_prelude/screens/brochures/brochures.dart';
-import 'package:honda_prelude/screens/colors/colors.dart';
+import 'package:honda_prelude/screens/body_colors/body_colors.dart';
 import 'package:honda_prelude/screens/mopowababeh/mo_powa_babeh.dart';
 import 'package:honda_prelude/screens/rims_tires/rims_tires.dart';
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:honda_prelude/data/menu/menu_item.dart';
 import 'package:honda_prelude/screen_data.dart';
-import 'package:honda_prelude/screens/home/menu_items.dart';
+import 'package:honda_prelude/screens/home/menu_items_data.dart';
 import 'package:honda_prelude/utils/utils.dart';
 import 'package:provider/provider.dart';
 
