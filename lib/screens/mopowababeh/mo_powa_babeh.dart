@@ -71,7 +71,7 @@ class MoPowaBabehState extends State<MoPowaBabeh> {
                 );
               },
               tooltip: 'Info',
-              heroTag: 'more_power_btn_0',
+              heroTag: 'more_power',
               child: const Icon(Icons.car_repair),
             ),
             const Text(

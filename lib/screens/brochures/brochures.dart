@@ -56,7 +56,7 @@ class BrochuresState extends State<Brochures> {
                 );
               },
               tooltip: 'Brochures',
-              heroTag: 'brochure_btn',
+              heroTag: 'brochure',
               child: const Icon(Icons.picture_as_pdf_rounded),
             ),
             const Text(
