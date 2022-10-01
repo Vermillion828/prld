@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:honda_prelude/data/colors/body_colors.dart';
+import 'package:honda_prelude/screens/body_colors/body_color_item.dart';
+import 'package:honda_prelude/screens/body_colors/body_colors_data.dart';
 
 class BodyColors extends StatefulWidget {
+  final int gen;
+
   const BodyColors({
+    required this.gen,
     Key? key,
   }) : super(key: key);
 
@@ -64,14 +70,57 @@ class BodyColorsState extends State<BodyColors> {
         ),
       ),
       body: SafeArea(
-        child: Center(
-          child: Column(
-            children: const [
-              Text('Colors is coming'),
-            ],
-          ),
+        child: ListView.builder(
+          itemBuilder: (BuildContext context, int index) {
+            final data = _getBodyColorData(context, index);
+            if (data != null) {
+              return BodyColorItem(data);
+            } else {
+              return const SizedBox();
+            }
+          },
+          itemCount: _getBodyColorsLength(context),
         ),
       ),
     );
+  }
+
+  int _getBodyColorsLength(
+    BuildContext context,
+  ) {
+    switch (widget.gen) {
+      case 1:
+        return firstGenPaintColors.length;
+      case 2:
+        return secondGenPaintColors.length;
+      case 3:
+        return thirdGenPaintColors.length;
+      case 4:
+        return fourthGenPaintColors.length;
+      case 5:
+        return fifthGenPaintColors.length;
+      default:
+        return 0;
+    }
+  }
+
+  BodyColor? _getBodyColorData(
+    BuildContext context,
+    int index,
+  ) {
+    switch (widget.gen) {
+      case 1:
+        return firstGenPaintColors[index];
+      case 2:
+        return secondGenPaintColors[index];
+      case 3:
+        return thirdGenPaintColors[index];
+      case 4:
+        return fourthGenPaintColors[index];
+      case 5:
+        return fifthGenPaintColors[index];
+      default:
+        return null;
+    }
   }
 }

@@ -39,6 +39,7 @@ class _MenuGridState extends State<MenuGrid> {
                     child: _getMenuItem(
                       currentMenu[index],
                       context,
+                      currentMenuGen,
                     ),
                   )
                 : const SizedBox(),
@@ -57,21 +58,25 @@ Color? _getItemBgColor(int index) {
 Widget _getMenuItem(
   MenuItemData data,
   BuildContext context,
+  int gen,
 ) {
   return getIsSmallScreen(context)
       ? _getSmallFABbyInddex(
           data,
           context,
+          gen,
         )
       : _getBigFABbyInddex(
           data,
           context,
+          gen,
         );
 }
 
 Widget _getSmallFABbyInddex(
   MenuItemData data,
   BuildContext context,
+  int gen,
 ) {
   return Column(
     mainAxisAlignment: MainAxisAlignment.center,
@@ -81,6 +86,7 @@ Widget _getSmallFABbyInddex(
         onPressed: () {
           Navigator.of(context).pushNamed(
             data.route,
+            arguments: gen,
           );
         },
         tooltip: data.tooltip,
@@ -98,12 +104,14 @@ Widget _getSmallFABbyInddex(
 Widget _getBigFABbyInddex(
   MenuItemData data,
   BuildContext context,
+  int gen,
 ) {
   return FloatingActionButton.large(
     heroTag: data.heroTag,
     onPressed: () {
       Navigator.of(context).pushNamed(
         data.route,
+        arguments: gen,
       );
     },
     tooltip: data.tooltip,

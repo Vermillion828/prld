@@ -5,6 +5,10 @@ import 'package:honda_prelude/screens/mopowababeh/mo_powa_babeh.dart';
 import 'package:honda_prelude/screens/rims_tires/rims_tires.dart';
 
 Route<dynamic>? handleNavigation(RouteSettings settings) {
+  final int gen = (settings.arguments != null && settings.arguments is int)
+      ? (settings.arguments as int)
+      : 0;
+
   if (settings.name == MoPowaBabeh.routeName) {
     return MaterialPageRoute(
       builder: (context) => const MoPowaBabeh(),
@@ -19,7 +23,9 @@ Route<dynamic>? handleNavigation(RouteSettings settings) {
 
   if (settings.name == BodyColors.routeName) {
     return MaterialPageRoute(
-      builder: (context) => const BodyColors(),
+      builder: (context) => BodyColors(
+        gen: gen,
+      ),
     );
   }
 
