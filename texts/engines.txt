@@ -5,11 +5,6 @@
 3gen
 b18
 b18c dual carb
-//todo: add engine
-//todo: add engine
-//todo: add engine
-//todo: add engine
-//todo: add engine
 b20
 
 4gen
