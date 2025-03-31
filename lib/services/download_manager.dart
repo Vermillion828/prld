@@ -1,5 +1,5 @@
 import 'dart:io';
-// import 'dart:isolate';
+import 'dart:isolate';
 import 'dart:typed_data';
 
 import 'package:flutter/foundation.dart';
@@ -21,8 +21,7 @@ class DownloadManager {
     var directory = await getApplicationDocumentsDirectory();
 
     final bytes = await compute<String, Uint8List>(createIsolate, url);
-    // final bytes = await createIsolate(url);
-    
+
     String dir = directory.path;
     String path = '$dir/$filename';
     final file = File(path);
@@ -33,52 +32,41 @@ class DownloadManager {
   Future<Uint8List> createIsolate(
     String url,
   ) async {
-    final httpClient = HttpClient();
+    ReceivePort myReceivePort = ReceivePort();
 
-    var request = await httpClient.getUrl(Uri.parse(url));
-    var response = await request.close();
-    var bytes = await consolidateHttpClientResponseBytes(response);
-    return bytes;
+    Isolate.spawn<SendPort>(launchDownload, myReceivePort.sendPort);
+
+    SendPort fileSendPort = await myReceivePort.first;
+
+    ReceivePort fileResponseReceivePort = ReceivePort();
+
+    fileSendPort.send([
+      url,
+      fileResponseReceivePort.sendPort,
+    ]);
+
+    final response = await fileResponseReceivePort.first;
+    return response;
   }
 
-  // Future<Uint8List> createIsolate(
-  //   String url,
-  // ) async {
-  //   ReceivePort myReceivePort = ReceivePort();
+  void launchDownload(SendPort mySendPort) async {
+    ReceivePort fileReceivePort = ReceivePort();
 
-  //   Isolate.spawn<SendPort>(launchDownload, myReceivePort.sendPort);
+    mySendPort.send(fileReceivePort.sendPort);
 
-  //   SendPort fileSendPort = await myReceivePort.first;
+    await for (var message in fileReceivePort) {
+      if (message is List) {
+        final url = message[0];
+        final SendPort fileResponseSendPort = message[1];
 
-  //   ReceivePort fileResponseReceivePort = ReceivePort();
+        final httpClient = HttpClient();
 
-  //   fileSendPort.send([
-  //     url,
-  //     fileResponseReceivePort.sendPort,
-  //   ]);
+        var request = await httpClient.getUrl(Uri.parse(url));
+        var response = await request.close();
+        var bytes = await consolidateHttpClientResponseBytes(response);
 
-  //   final response = await fileResponseReceivePort.first;
-  //   return response;
-  // }
-
-  // void launchDownload(SendPort mySendPort) async {
-  //   ReceivePort fileReceivePort = ReceivePort();
-
-  //   mySendPort.send(fileReceivePort.sendPort);
-
-  //   await for (var message in fileReceivePort) {
-  //     if (message is List) {
-  //       final url = message[0];
-  //       final SendPort fileResponseSendPort = message[1];
-
-  //       final httpClient = HttpClient();
-
-  //       var request = await httpClient.getUrl(Uri.parse(url));
-  //       var response = await request.close();
-  //       var bytes = await consolidateHttpClientResponseBytes(response);
-
-  //       fileResponseSendPort.send(bytes);
-  //     }
-  //   }
-  // }
+        fileResponseSendPort.send(bytes);
+      }
+    }
+  }
 }

@@ -76,8 +76,8 @@ class BrochuresState extends State<Brochures> {
               OutlinedButton(
                 onPressed: () async {
                   final path = await DownloadManager().downloadFile(
-                    url:
-                        'https://autocatalogarchive.com/wp-content/uploads/2016/10/Honda-Prelude-1999-NL.pdf',
+                    url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+                        // 'https://autocatalogarchive.com/wp-content/uploads/2016/10/Honda-Prelude-1999-NL.pdf',
                     filename: '5_gen_1999_NL.pdf',
                   );
                   if (path != null) {
