@@ -4,10 +4,6 @@
 <dict>
 	<key>files</key>
 	<dict>
-		<key>Headers/FLTURLLauncherPlugin.h</key>
-		<data>
-		VUxFtlBCbNBGMu9Vb70w5zFrXjE=
-		</data>
 		<key>Headers/url_launcher_ios-Swift.h</key>
 		<data>
 		eqM1WjEzoRe/s2KTuIGMjSJ/kEQ=
@@ -67,13 +63,6 @@
 	</dict>
 	<key>files2</key>
 	<dict>
-		<key>Headers/FLTURLLauncherPlugin.h</key>
-		<dict>
-			<key>hash2</key>
-			<data>
-			Y1GWs7KRnko3Pe3W+zLcwjZkNyIH2oGKr3+efmw5Olw=
-			</data>
-		</dict>
 		<key>Headers/url_launcher_ios-Swift.h</key>
 		<dict>
 			<key>hash2</key>
